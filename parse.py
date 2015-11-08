@@ -173,6 +173,7 @@ def generate_test_script(folder, num_tests, problem, test_file):
             .format(num_tests, BOLD, NORM, GREEN_F, RED_F, TIME_CMD, TIME_AP))
     call(['chmod', '+x', folder + 'test.sh'])
     call(['chmod', '+x', folder + TEMPLATE])
+    call(['chmod', '+x', folder + 'main.hs'])
 
 # Main function.
 def main():
@@ -196,6 +197,10 @@ def main():
         template_file_folder = os.path.split(os.path.abspath(os.path.realpath(argv[0])))[0]
         template_file_path = os.path.join(template_file_folder, TEMPLATE)
         call(['cp', '-n', template_file_path, '%s/%s/' % (contest, problem)])
+
+        template_file_path_haskell = os.path.join(template_file_folder, 'main.hs')
+        call(['cp', '-n', template_file_path_haskell, '%s/%s/' % (contest, problem)])
+
         num_tests = parse_problem(folder, contest, problem)
         print('%d sample test(s) found.' % num_tests)
         generate_test_script(folder, num_tests, problem, TEMPLATE)

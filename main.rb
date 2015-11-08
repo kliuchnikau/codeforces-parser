@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-input = gets
+input = gets.to_i
 
 puts input
