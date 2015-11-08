@@ -172,8 +172,15 @@ def generate_test_script(folder, num_tests, problem, test_file):
             'done\n'
             .format(num_tests, BOLD, NORM, GREEN_F, RED_F, TIME_CMD, TIME_AP))
     call(['chmod', '+x', folder + 'test.sh'])
-    call(['chmod', '+x', folder + TEMPLATE])
-    call(['chmod', '+x', folder + 'main.hs'])
+
+def init_git(folder):
+    FNULL = open(os.devnull, 'w')
+    call(['cd', folder])
+    call(['git', 'init'], stdout=FNULL, stderr=FNULL)
+    call(['git', 'add', '.'], stdout=FNULL, stderr=FNULL)
+    call(['git', 'commit', '-m', "'Initial commit'"], stdout=FNULL, stderr=FNULL)
+    print ('Local Git repo initiated')
+    print ('========================================')
 
 # Main function.
 def main():
@@ -194,18 +201,22 @@ def main():
         print ('Downloading Problem %s: %s...' % (problem, content.problem_names[index]))
         folder = '%s/%s/' % (contest, problem)
         call(['mkdir', '-p', folder])
+
         template_file_folder = os.path.split(os.path.abspath(os.path.realpath(argv[0])))[0]
         template_file_path = os.path.join(template_file_folder, TEMPLATE)
         call(['cp', '-n', template_file_path, '%s/%s/' % (contest, problem)])
+        call(['chmod', '+x', folder + TEMPLATE])
 
         template_file_path_haskell = os.path.join(template_file_folder, 'main.hs')
         call(['cp', '-n', template_file_path_haskell, '%s/%s/' % (contest, problem)])
+        call(['chmod', '+x', folder + 'main.hs'])
 
         num_tests = parse_problem(folder, contest, problem)
         print('%d sample test(s) found.' % num_tests)
         generate_test_script(folder, num_tests, problem, TEMPLATE)
         print ('========================================')
 
+    init_git(contest)
     print ('Use ./test.sh to run sample tests in each directory.')
 
 if __name__ == '__main__':
